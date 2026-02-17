@@ -1,0 +1,25 @@
+{
+  "name": "formulario-entrevistas",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "jspdf": "^4.1.0",
+    "jspdf-autotable": "^5.0.7",
+    "preact": "^10.27.2",
+    "react-router-dom": "^7.13.0"
+  },
+  "devDependencies": {
+    "@preact/preset-vite": "^2.10.2",
+    "@tailwindcss/postcss": "^4.1.18",
+    "autoprefixer": "^10.4.24",
+    "postcss": "^8.5.6",
+    "tailwindcss": "^4.1.18",
+    "vite": "^7.2.4"
+  }
+}
