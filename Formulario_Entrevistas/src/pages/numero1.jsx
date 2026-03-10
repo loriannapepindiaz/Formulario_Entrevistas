@@ -39,19 +39,19 @@ function Numero1() {
   const [duracionMadre, setDuracionMadre] = useState(saved.duracion_madre || "");
   const [tipoMadre, setTipoMadre] = useState(saved.tipo_madre || "");
   const [mostrarDuracionMadre, setMostrarDuracionMadre] = useState(!!saved.nivel_madre && saved.nivel_madre !== "ninguno");
-  const [mostrarTipoMadre, setMostrarTipoMadre] = useState(!!saved.nivel_madre && ["licenciatura", "maestria", "ingenieria", "doctorado", "otros"].includes(saved.nivel_madre));
+  const [mostrarTipoMadre, setMostrarTipoMadre] = useState(!!saved.nivel_madre && ["licenciatura", "maestria", "ingenieria", "doctorado", "otros", "Técnico"].includes(saved.nivel_madre));
 
   const [nivelPadre, setNivelPadre] = useState(saved.nivel_padre || "");
   const [duracionPadre, setDuracionPadre] = useState(saved.duracion_padre || "");
   const [tipoPadre, setTipoPadre] = useState(saved.tipo_padre || "");
   const [mostrarDuracionPadre, setMostrarDuracionPadre] = useState(!!saved.nivel_padre && saved.nivel_padre !== "ninguno");
-  const [mostrarTipoPadre, setMostrarTipoPadre] = useState(!!saved.nivel_padre && ["licenciatura", "maestria", "ingenieria", "doctorado", "otros"].includes(saved.nivel_padre));
+  const [mostrarTipoPadre, setMostrarTipoPadre] = useState(!!saved.nivel_padre && ["licenciatura", "maestria", "ingenieria", "doctorado", "otros", "Técnico"].includes(saved.nivel_padre));
 
   const [nivelTutor, setNivelTutor] = useState(saved.nivel_tutor || "");
   const [duracionTutor, setDuracionTutor] = useState(saved.duracion_tutor || "");
   const [tipoTutor, setTipoTutor] = useState(saved.tipo_tutor || "");
   const [mostrarDuracionTutor, setMostrarDuracionTutor] = useState(!!saved.nivel_tutor && saved.nivel_tutor !== "ninguno");
-  const [mostrarTipoTutor, setMostrarTipoTutor] = useState(!!saved.nivel_tutor && ["licenciatura", "maestria", "ingenieria", "doctorado", "otros"].includes(saved.nivel_tutor));
+  const [mostrarTipoTutor, setMostrarTipoTutor] = useState(!!saved.nivel_tutor && ["licenciatura", "maestria", "ingenieria", "doctorado", "otros", "Técnico"].includes(saved.nivel_tutor));
 
   const [vinculacion, setVinculacion] = useState(saved.vinculacion || "");
   const [especificarVinculacion, setEspecificarVinculacion] = useState(saved.especificar_vinculacion || "");
@@ -101,8 +101,8 @@ function Numero1() {
     const value = e.target.value;
     setNivelMadre(value);
     setMostrarDuracionMadre(value && value !== "ninguno");
-    setMostrarTipoMadre(value && ["licenciatura", "maestria", "ingenieria", "doctorado", "otros"].includes(value));
-    if (!["licenciatura", "maestria", "ingenieria", "doctorado", "otros"].includes(value)) {
+    setMostrarTipoMadre(value && ["licenciatura", "maestria", "ingenieria", "doctorado", "otros", "Técnico"].includes(value));
+    if (!["licenciatura", "maestria", "ingenieria", "doctorado", "otros", "Técnico"].includes(value)) {
       setTipoMadre("");
     }
   };
@@ -111,8 +111,8 @@ function Numero1() {
     const value = e.target.value;
     setNivelPadre(value);
     setMostrarDuracionPadre(value && value !== "ninguno");
-    setMostrarTipoPadre(value && ["licenciatura", "maestria", "ingenieria", "doctorado", "otros"].includes(value));
-    if (!["licenciatura", "maestria", "ingenieria", "doctorado", "otros"].includes(value)) {
+    setMostrarTipoPadre(value && ["licenciatura", "maestria", "ingenieria", "doctorado", "otros", "Técnico"].includes(value));
+    if (!["licenciatura", "maestria", "ingenieria", "doctorado", "otros", "Técnico"].includes(value)) {
       setTipoPadre("");
     }
   };
@@ -121,8 +121,8 @@ function Numero1() {
     const value = e.target.value;
     setNivelTutor(value);
     setMostrarDuracionTutor(value && value !== "ninguno");
-    setMostrarTipoTutor(value && ["licenciatura", "maestria", "ingenieria", "doctorado", "otros"].includes(value));
-    if (!["licenciatura", "maestria", "ingenieria", "doctorado", "otros"].includes(value)) {
+    setMostrarTipoTutor(value && ["licenciatura", "maestria", "ingenieria", "doctorado", "otros", "Técnico"].includes(value));
+    if (!["licenciatura", "maestria", "ingenieria", "doctorado", "otros", "Técnico"].includes(value)) {
       setTipoTutor("");
     }
   };
@@ -433,6 +433,7 @@ function Numero1() {
                   <option value="">Seleccione</option>
                   <option value="primaria">Educación primaria</option>
                   <option value="bachillerato">Bachillerato</option>
+                  <option value="Técnico">Técnico </option>
                   <option value="universitario">Universitario</option>
                   <option value="licenciatura">Licenciatura</option>
                   <option value="maestria">Maestría</option>
@@ -484,6 +485,7 @@ function Numero1() {
                   <option value="">Seleccione</option>
                   <option value="primaria">Educación primaria</option>
                   <option value="bachillerato">Bachillerato</option>
+                  <option value="Técnico">Técnico </option>
                   <option value="universitario">Universitario</option>
                   <option value="licenciatura">Licenciatura</option>
                   <option value="maestria">Maestría</option>
@@ -544,6 +546,7 @@ function Numero1() {
                     <option value="">Seleccione</option>
                     <option value="primaria">Educación primaria</option>
                     <option value="bachillerato">Bachillerato</option>
+                    <option value="Técnico">Técnico </option>
                     <option value="universitario">Universitario</option>
                     <option value="licenciatura">Licenciatura</option>
                     <option value="maestria">Maestría</option>
@@ -643,6 +646,7 @@ function Numero1() {
               </div>
             )}
           </div>
+          
 
           {/* Botones */}
           <div className="mt-12 pt-8 border-t border-slate-200 flex flex-col sm:flex-row items-center justify-between gap-4">

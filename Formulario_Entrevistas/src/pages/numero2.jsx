@@ -66,7 +66,7 @@ export default function Numero2() {
               </h2>
             </div>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-              {["Soltero/a", "Casado/a", "Divorciado/a", "Viudo/a", "Unión libre", "Separado/a", "Anulado/a", "En trámite de divorcio"].map((opcion) => {
+              {["Soltero/a", "Casado/a", "Divorciado/a", "Viudo/a", "Unión libre", "Separado/a", "En trámite de divorcio"].map((opcion) => {
                 const isSelected = selectedEstadoCivil === opcion;
                 return (
                   <label

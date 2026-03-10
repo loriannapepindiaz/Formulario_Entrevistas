@@ -410,7 +410,6 @@ function Numero4() {
                           <option value="Venezuela">Venezuela</option>
                           <option value="Perú">Perú</option>
                           <option value="México">México</option>
-                          <option value="República Dominicana">República Dominicana</option>
                           <option value="Puerto Rico">Puerto Rico</option>
                         </select>
                         <span className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-[#4682B4] material-symbols-outlined">
@@ -506,7 +505,7 @@ function Numero4() {
               {/* 26 - Con cuál(es) padre(s) convive el estudiante */}
               <div>
                 <label className="block text-sm font-medium text-slate-700 mb-3">
-                  26. ¿Con cuál(es) padre(s) convive el estudiante?
+                 26. ¿Con quién convive el estudiante?
                 </label>
                 <div className="flex gap-6 items-center flex-wrap">
                   {["Con ambos", "Solo con la madre", "Solo con el padre", "No convive con ninguno"].map(v => (
@@ -755,7 +754,7 @@ function Numero4() {
 
       {/* Modal confirmar impresión */}
       {showPrintConfirm && (
-        <div className="fixed inset-0 flex items-center justify-center bg-slate-900/70 backdrop-blur-sm z-50">
+        <div className="fixed inset-0 flex items-center justify-center bg-slate-900/70 backdrop-blur-sm z-50 no-print">
           <div className="bg-white p-7 rounded-2xl shadow-2xl max-w-sm w-full text-center border border-slate-200">
             <h3 className="text-xl font-semibold text-slate-800 mb-6">¿Desea guardar e imprimir la entrevista?</h3>
             <div className="flex justify-center gap-5">
@@ -775,6 +774,14 @@ function Numero4() {
           </div>
         </div>
       )}
+
+      <style>{`
+        @media print {
+          .no-print {
+            display: none !important;
+          }
+        }
+      `}</style>
     </div>
   );
 }
