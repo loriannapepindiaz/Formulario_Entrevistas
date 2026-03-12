@@ -33,6 +33,29 @@ npm run dev
 npm start
 ```
 
-## Endpoint inicial
+## Endpoints
 
-- `GET /api/health`: Verifica que la API y la conexión a PostgreSQL estén funcionando.
+- `GET /api/health`
+- `POST /api/estudiantes`
+- `GET /api/estudiantes`
+- `GET /api/estudiantes/:id`
+- `PUT /api/estudiantes/:id`
+- `POST /api/padres`
+- `GET /api/padres`
+- `GET /api/padres/:id`
+- `PUT /api/padres/:id`
+- `POST /api/entrevistas`
+- `GET /api/entrevistas`
+- `GET /api/entrevistas/:id`
+- `PUT /api/entrevistas/:id`
+- `GET /api/catalogos`
+
+## Formato de respuesta
+
+```json
+{
+  "status": "success",
+  "message": "...",
+  "data": {}
+}
+```

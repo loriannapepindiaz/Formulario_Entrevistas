@@ -1,6 +1,8 @@
 const notFoundHandler = (req, res) => {
   res.status(404).json({
-    message: `Route not found: ${req.method} ${req.originalUrl}`
+    status: 'error',
+    message: `Route not found: ${req.method} ${req.originalUrl}`,
+    data: null
   });
 };
 
@@ -13,7 +15,9 @@ const errorHandler = (error, req, res, next) => {
   }
 
   res.status(statusCode).json({
-    message
+    status: 'error',
+    message,
+    data: null
   });
 };
 
