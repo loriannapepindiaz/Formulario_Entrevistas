@@ -1,6 +1,6 @@
 const { createCrudController } = require('./crudControllerFactory');
 
 module.exports = createCrudController({
-  tableName: 'estudiantes',
+  tableName: 'estudiante',
   entityName: 'Student'
 });
