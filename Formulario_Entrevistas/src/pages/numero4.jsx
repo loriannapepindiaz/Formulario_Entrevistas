@@ -1,11 +1,25 @@
 import { useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { printInterviewPdfFormat } from '../utils/pdfPrintFormatter';
+import { printInterviewPdfFormat, saveInterviewAsPdf } from '../utils/pdfPrintFormatter';
+
+function readInterviewStorage() {
+  if (typeof window === 'undefined') return {};
+  const raw = window.localStorage.getItem('entrevista');
+  if (!raw) return {};
+
+  try {
+    const parsed = JSON.parse(raw);
+    return parsed && typeof parsed === 'object' ? parsed : {};
+  } catch (_error) {
+    window.localStorage.removeItem('entrevista');
+    return {};
+  }
+}
 
 function Numero4() {
   const navigate = useNavigate();
   const formRef = useRef(null);
-  const [saved, setSaved] = useState(() => JSON.parse(localStorage.getItem('entrevista') || '{}'));
+  const [saved, setSaved] = useState(readInterviewStorage);
   const [showSuccess, setShowSuccess] = useState(false);
   const [showPrintConfirm, setShowPrintConfirm] = useState(false);
 
@@ -38,7 +52,10 @@ function Numero4() {
   };
 
   const saveFormData = (target) => {
-    const form = new FormData(target ?? formRef.current);
+    const source = target ?? formRef.current;
+    if (!source) return saved;
+
+    const form = new FormData(source);
     const values = Object.fromEntries(form.entries());
     const data = { ...saved, ...values };
 
@@ -80,6 +97,11 @@ function Numero4() {
   };
 
   const handlePrint = () => setShowPrintConfirm(true);
+
+  const handleSavePdf = () => {
+    const data = saveFormData(formRef.current);
+    saveInterviewAsPdf(data);
+  };
 
   const confirmPrint = () => {
     setShowPrintConfirm(false);
@@ -456,16 +478,20 @@ function Numero4() {
           <div className="mt-12 pt-8 border-t border-slate-200 flex flex-col sm:flex-row items-center justify-between gap-4">
             <p className="text-xs text-slate-400 order-2 sm:order-1">Código: P-AD-01-F-04 | Rev. 03</p>
 
-            <div className="flex gap-4 w-full sm:w-auto order-1 sm:order-2">
-              <button type="button" onClick={() => navigate('/paso3')} className="flex-1 sm:flex-none px-8 py-3 rounded-xl border border-slate-300 text-slate-700 font-medium hover:bg-slate-50 transition-all flex items-center justify-center gap-2">
+            <div className="flex flex-wrap items-stretch justify-end gap-3 w-full sm:w-auto order-1 sm:order-2">
+              <button type="button" onClick={() => navigate('/paso3')} className="sm:flex-none min-w-[180px] px-8 py-3 rounded-xl border border-slate-300 text-slate-700 font-medium hover:bg-slate-50 transition-all flex items-center justify-center gap-2 min-h-[50px]">
                 <span className="material-symbols-outlined">arrow_back</span>
                 Volver atrás
               </button>
-              <button type="button" onClick={handlePrint} className="flex-1 sm:flex-none px-8 py-3 rounded-xl border border-[#4682B4] text-[#4682B4] font-medium hover:bg-blue-50 transition-all flex items-center justify-center gap-2">
+              <button type="button" onClick={handlePrint} className="sm:flex-none min-w-[180px] px-8 py-3 rounded-xl border border-[#4682B4] text-[#4682B4] font-medium hover:bg-blue-50 transition-all flex items-center justify-center gap-2 min-h-[50px]">
                 <span className="material-symbols-outlined">print</span>
                 Imprimir
               </button>
-              <button type="submit" className="flex-1 sm:flex-none bg-[#4682B4] text-white px-10 py-3 rounded-xl font-semibold shadow-md hover:opacity-90 transition-all flex items-center justify-center gap-2">
+              <button type="button" onClick={handleSavePdf} className="sm:flex-none min-w-[180px] px-8 py-3 rounded-xl border border-[#4682B4] text-[#4682B4] font-medium hover:bg-blue-50 transition-all flex items-center justify-center gap-2 min-h-[50px]">
+                <span className="material-symbols-outlined">picture_as_pdf</span>
+                Guardar en PDF
+              </button>
+              <button type="submit" className="sm:flex-none min-w-[200px] bg-[#4682B4] text-white px-10 py-3 rounded-xl font-semibold shadow-md hover:opacity-90 transition-all flex items-center justify-center gap-2 min-h-[50px]">
                 Guardar y Finalizar
                 <span className="material-symbols-outlined">check_circle</span>
               </button>
@@ -512,4 +538,4 @@ function Numero4() {
   );
 }
 
-export default numero4;
+export default Numero4;

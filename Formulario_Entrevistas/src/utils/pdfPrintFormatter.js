@@ -14,27 +14,66 @@ const pick = (data, keys) => {
   return '';
 };
 
-const yn = (value) => {
+const ynPrintable = (value) => {
   if (!hasValue(value)) return '';
   const v = String(value).trim().toLowerCase();
-  if (v === 'si' || v === 'sí' || v === 'yes' || v === 'true') return 'Sí';
-  if (v === 'no' || v === 'false') return 'No';
+  if (['si', 'sí', 'yes', 'true'].includes(v)) return 'Sí';
+  if (['no', 'false'].includes(v)) return '';
   return String(value);
 };
 
 const mergeAnswer = (...parts) => parts.filter(hasValue).join(' ').trim();
 
+const asList = (value) => {
+  if (Array.isArray(value)) return value;
+  if (hasValue(value)) return [String(value)];
+  return [];
+};
+
 function getPrintableData(data = {}) {
+  const entrevistados = asList(pick(data, ['entrevistados', 'informacion_entrevistado', 'entrevistado'])).map((item) => {
+    if (typeof item === 'object' && item) {
+      return {
+        nombre: pick(item, ['nombre', 'entrevistado', 'nombre_completo']),
+        parentesco: pick(item, ['parentesco', 'relacion']),
+      };
+    }
+    return { nombre: String(item), parentesco: '' };
+  });
+
   return {
-    fecha: pick(data, ['fecha', 'fecha_entrevista', 'fechaEntrevista']),
-    formulario: pick(data, ['formulario', 'numero_formulario']),
-    seccion: pick(data, ['seccion', 'sección']),
-    nombreCompleto: pick(data, ['nombre_completo', 'nombreCompleto']) || `${pick(data, ['nombre', 'nombre_estudiante'])} ${pick(data, ['apellido', 'apellido_estudiante'])}`.trim(),
-    entrevistaRealizadaPor: pick(data, ['entrevista_realizada_por', 'entrevistador', 'entrevistado_por']),
+    fecha: pick(data, ['fecha', 'fecha_entrevista', 'fechaEntrevista', 'fecha_entrevista_familiar']),
+    formulario: pick(data, ['formulario', 'numero_formulario', 'formulario_numero']),
+    seccion: pick(data, ['seccion', 'sección', 'seccion_grupo']),
+    codigo: 'Código: P-AD-01-F-04 | Rev. 03',
+    nombreCompleto:
+      pick(data, ['nombre_completo', 'nombreCompleto', 'estudiante_nombre_completo'])
+      || `${pick(data, ['nombre', 'nombre_estudiante'])} ${pick(data, ['apellido', 'apellido_estudiante'])}`.trim(),
+    sexo: pick(data, ['sexo', 'genero', 'género']),
+    edad: pick(data, ['edad']),
+    entrevistados,
+    entrevistado1: pick(data, ['entrevistado_1', 'entrevistado1_nombre']),
+    parentesco1: pick(data, ['parentesco_1', 'parentesco1']),
+    entrevistado2: pick(data, ['entrevistado_2', 'entrevistado2_nombre']),
+    parentesco2: pick(data, ['parentesco_2', 'parentesco2']),
+    nivelTutor: mergeAnswer(
+      pick(data, ['nivel_madre', 'nivel_academico_madre']),
+      pick(data, ['nivel_padre', 'nivel_academico_padre']),
+    ),
+    obraSalesiana: [
+      'Oratorio',
+      'Centro Juvenil',
+      'Cooperador',
+      'Traslado',
+      'Exalumno',
+    ].filter((opt) => String(pick(data, ['obra_salesiana', 'vinculacion_institucional', 'procede_obra_salesiana', opt.toLowerCase()])).toLowerCase().includes(opt.toLowerCase())).join(', ')
+      || pick(data, ['obra_salesiana', 'vinculacion_institucional', 'procede_obra_salesiana']),
+    relacionSalesiana: pick(data, ['relacion_salesiana', 'detalle_relacion_salesiana', 'vinculacion_detalle']),
+    entrevistaRealizadaPor: pick(data, ['entrevista_realizada_por', 'entrevistador', 'entrevistado_por', 'realizada_por']),
     q1: pick(data, ['conducta_escolar', 'pregunta_1', 'pregunta1', 'p1']),
     q2: pick(data, ['inconveniente_colegio', 'pregunta_2', 'pregunta2', 'p2']),
     q3: mergeAnswer(
-      yn(pick(data, ['ayuda_psicologica', 'ayuda_psicologica_si_no', 'pregunta_3', 'pregunta3', 'p3'])),
+      ynPrintable(pick(data, ['ayuda_psicologica', 'ayuda_psicologica_si_no', 'pregunta_3', 'pregunta3', 'p3'])),
       pick(data, ['ayuda_psicologica_detalle', 'detalle_ayuda_psicologica', 'pregunta_3_detalle', 'pregunta3_detalle']),
     ),
     q4: pick(data, ['habitos_estudio', 'habitos_de_estudio', 'pregunta_4', 'pregunta4', 'p4']),
@@ -42,7 +81,7 @@ function getPrintableData(data = {}) {
     q6: pick(data, ['tiempo_juntos_casa', 'tiempo_juntos', 'pregunta_6', 'pregunta6', 'p6']),
     q7: pick(data, ['espera_del_centro', 'expectativas_centro', 'pregunta_7', 'pregunta7', 'p7']),
     q8: mergeAnswer(
-      yn(pick(data, ['agresion_estudiante', 'agresion_si_no', 'pregunta_8', 'pregunta8', 'p8'])),
+      ynPrintable(pick(data, ['agresion_estudiante', 'agresion_si_no', 'pregunta_8', 'pregunta8', 'p8'])),
       pick(data, ['agresion_estudiante_detalle', 'detalle_agresion', 'pregunta_8_detalle', 'pregunta8_detalle']),
     ),
     q9: pick(data, ['convivencia_estudiante', 'con_quien_vive', 'pregunta_9', 'pregunta9', 'p9']),
@@ -50,13 +89,29 @@ function getPrintableData(data = {}) {
     q11: pick(data, ['dificultad_otra_institucion', 'dificultades_otra_institucion', 'pregunta_11', 'pregunta11', 'p11']),
     q12: pick(data, ['respuesta_estudiante', 'hablanos_tu_familia', 'pregunta_12', 'pregunta12', 'p12']),
     q13: pick(data, ['sobredad_detalle', 'sobreedad_detalle', 'pregunta_13', 'pregunta13', 'p13']),
-    q14: yn(pick(data, ['problemas_alfabetizarse', 'problemas_alfabetizacion', 'pregunta_14', 'pregunta14', 'p14'])),
+    q14: ynPrintable(pick(data, ['problemas_alfabetizarse', 'problemas_alfabetizacion', 'pregunta_14', 'pregunta14', 'p14'])),
     q15: pick(data, ['desea_estudiar', 'motiva_estudiar_escuela', 'pregunta_15', 'pregunta15', 'p15']),
     q16: pick(data, ['ingreso_familia', 'ingreso_real_familia', 'pregunta_16', 'pregunta16', 'p16']),
     q17: pick(data, ['aporte_mensual', 'aporte_sugerido', 'pregunta_17', 'pregunta17', 'p17']),
     q18: pick(data, ['telefono', 'telefono_contacto', 'telefono_padre_madre_tutor', 'pregunta_18', 'pregunta18', 'p18']),
     observaciones: pick(data, ['observaciones', 'nota_observaciones']),
   };
+}
+
+function renderEntrevistados(info) {
+  if (info.entrevistados.length > 0) {
+    return info.entrevistados.map((e, idx) => `
+      <div class="row"><div class="label">Entrevistado ${idx + 1}:</div><div class="value">${esc(e.nombre)}</div></div>
+      <div class="row"><div class="label">Parentesco:</div><div class="value">${esc(e.parentesco)}</div></div>
+    `).join('');
+  }
+
+  return `
+    <div class="row"><div class="label">Entrevistado 1:</div><div class="value">${esc(info.entrevistado1)}</div></div>
+    <div class="row"><div class="label">Parentesco:</div><div class="value">${esc(info.parentesco1)}</div></div>
+    <div class="row"><div class="label">Entrevistado 2:</div><div class="value">${esc(info.entrevistado2)}</div></div>
+    <div class="row"><div class="label">Parentesco:</div><div class="value">${esc(info.parentesco2)}</div></div>
+  `;
 }
 
 export function buildPdfPrintableHtml(data = {}) {
@@ -87,35 +142,59 @@ export function buildPdfPrintableHtml(data = {}) {
   return `<!doctype html>
 <html><head><meta charset="utf-8" /><title>Entrevista Familiar</title>
 <style>
-  @page { size: letter; margin: 14mm 10mm 16mm 10mm; }
+  @page { size: letter; margin: 14mm 10mm 14mm 10mm; }
   body { font-family: Arial, sans-serif; font-size: 12px; color: #111; margin: 0; }
-  .wrap { padding-bottom: 28px; }
-  .header { display: grid; grid-template-columns: 48px 1fr 48px; align-items: center; margin-bottom: 8px; }
-  .logo { width: 42px; height: 42px; object-fit: contain; }
+  .header { display: grid; grid-template-columns: 56px 1fr 56px; align-items: center; margin-bottom: 8px; column-gap: 12px; }
+  .logo { width: 56px; height: 56px; object-fit: contain; }
+  .logo-left { justify-self: start; }
+  .logo-right { justify-self: end; }
   .head { font-weight: 700; text-align: center; font-size: 13px; }
-  .row { margin: 7px 0; }
+  .meta-row { display: grid; grid-template-columns: minmax(0,1.4fr) minmax(0,1fr) minmax(0,1fr); gap: 14px; margin: 8px 0 8px; }
+  .meta-item { display: flex; align-items: center; gap: 6px; min-width: 0; }
+  .meta-label { font-weight: 700; white-space: nowrap; }
+  .meta-value { display: inline-block; min-width: 50px; width: 100%; border-bottom: 1px solid #000; line-height: 1.2; min-height: 16px; overflow-wrap: anywhere; }
+  .code-top { text-align: right; font-size: 10px; color: #333; margin-bottom: 8px; }
+  .row { margin: 6px 0; break-inside: avoid-page; page-break-inside: avoid; }
   .label { font-weight: 700; margin-bottom: 2px; }
-  .value { white-space: pre-wrap; min-height: 18px; border-bottom: 1px solid #000; padding-bottom: 2px; }
-  .footer { position: fixed; left: 0; right: 0; bottom: 0; text-align: center; font-size: 11px; color: #333; padding: 4px 0; background: #fff; }
+  .value { white-space: pre-wrap; overflow-wrap: anywhere; min-height: 16px; border-bottom: 1px solid #000; padding-bottom: 2px; }
+  .footer { margin-top: 10px; text-align: center; font-size: 11px; color: #333; break-inside: avoid-page; page-break-inside: avoid; }
 </style></head>
 <body>
-  <div class="wrap">
-    <div class="header">
-      <img class="logo" src="/logoipisa.png" alt="Logo IPISA" onerror="if(!this.dataset.a){this.dataset.a='1';this.src='logoipisa.png';}else if(!this.dataset.b){this.dataset.b='1';this.src='./logoipisa.png';}else{this.style.display='none';}" />
-      <div class="head">PLANILLA PARA ENTREVISTA FAMILIAR</div>
-      <div></div>
-    </div>
-
-    <div class="row"><div class="label">Fecha de entrevista:</div><div class="value">${esc(info.fecha)}</div></div>
-    <div class="row"><div class="label">Formulario:</div><div class="value">${esc(info.formulario)}</div></div>
-    <div class="row"><div class="label">Sección:</div><div class="value">${esc(info.seccion)}</div></div>
-    <div class="row"><div class="label">Nombre(s) y Apellido(s) del estudiante:</div><div class="value">${esc(info.nombreCompleto)}</div></div>
-    ${q.map(([label, value]) => `<div class="row"><div class="label">${esc(label)}</div><div class="value">${esc(value)}</div></div>`).join('')}
-    <div class="row" style="margin-top:14px;"><div class="label">Entrevista realizada por:</div><div class="value">${esc(info.entrevistaRealizadaPor)}</div></div>
+  <div class="header">
+    <img class="logo logo-left" src="/logosalesianos.jpg" alt="Logo Salesianos" onerror="if(!this.dataset.a){this.dataset.a='1';this.src='logosalesianos.jpg';}else if(!this.dataset.b){this.dataset.b='1';this.src='./logosalesianos.jpg';}else{this.style.display='none';}" />
+    <div class="head">PLANILLA PARA ENTREVISTA FAMILIAR</div>
+    <img class="logo logo-right" src="/logoipisa.png" alt="Logo IPISA" onerror="if(!this.dataset.a){this.dataset.a='1';this.src='logoipisa.png';}else if(!this.dataset.b){this.dataset.b='1';this.src='./logoipisa.png';}else{this.style.display='none';}" />
   </div>
 
-  <div class="footer">Código: P-AD-01-F-04 | Rev. 03</div>
+  <div class="meta-row">
+    <div class="meta-item"><span class="meta-label">Fecha de entrevista:</span><span class="meta-value">${esc(info.fecha)}</span></div>
+    <div class="meta-item"><span class="meta-label">Formulario:</span><span class="meta-value">${esc(info.formulario)}</span></div>
+    <div class="meta-item"><span class="meta-label">Sección:</span><span class="meta-value">${esc(info.seccion)}</span></div>
+  </div>
+  <div class="code-top">${esc(info.codigo)}</div>
+
+  <div class="row"><div class="label">Nombre(s) y Apellido(s) del estudiante:</div><div class="value">${esc(info.nombreCompleto)}</div></div>
+  <div class="row"><div class="label">Sexo:</div><div class="value">${esc(info.sexo)}</div></div>
+  <div class="row"><div class="label">Edad:</div><div class="value">${esc(info.edad)}</div></div>
+  <div class="row"><div class="label">Información del Entrevistado:</div><div class="value">&nbsp;</div></div>
+  ${renderEntrevistados(info)}
+  <div class="row"><div class="label">Nivel académico del Tutor(a):</div><div class="value">${esc(info.nivelTutor)}</div></div>
+  <div class="row"><div class="label">Vinculación Institucional:</div><div class="value">${esc(info.obraSalesiana)}</div></div>
+  <div class="row"><div class="label">Especifique la relación (ej: exalumno, trabaja, animador, etc.):</div><div class="value">${esc(info.relacionSalesiana)}</div></div>
+
+  ${q.map(([label, value]) => `<div class="row"><div class="label">${esc(label)}</div><div class="value">${esc(value)}</div></div>`).join('')}
+  <div class="row" style="margin-top:12px;"><div class="label">Entrevista realizada por:</div><div class="value">${esc(info.entrevistaRealizadaPor)}</div></div>
+  <div class="footer">${esc(info.codigo)}</div>
 </body></html>`;
+}
+
+function openPrintableWindow(html) {
+  const w = window.open('', '_blank');
+  if (!w) return null;
+  w.document.open();
+  w.document.write(html);
+  w.document.close();
+  return w;
 }
 
 function printFromIframe(html) {
@@ -144,9 +223,20 @@ function printFromIframe(html) {
     setTimeout(() => {
       if (iframe.parentNode) iframe.parentNode.removeChild(iframe);
     }, 500);
-  }, 150);
+  }, 180);
 
   return true;
+}
+
+export function saveInterviewAsPdf(data = {}) {
+  const html = buildPdfPrintableHtml(data);
+  const w = openPrintableWindow(html);
+  if (!w) return;
+
+  setTimeout(() => {
+    w.focus();
+    w.print();
+  }, 250);
 }
 
 export function printInterviewPdfFormat(data = {}) {
@@ -155,15 +245,13 @@ export function printInterviewPdfFormat(data = {}) {
   const printed = printFromIframe(html);
   if (printed) return;
 
-  const w = window.open('', '_blank');
+  const w = openPrintableWindow(html);
   if (!w) return;
-  w.document.open();
-  w.document.write(html);
-  w.document.close();
-  w.focus();
-  w.print();
+  setTimeout(() => {
+    w.focus();
+    w.print();
+  }, 250);
 }
 
 
 export * from './pdfPrintFormatter';
-

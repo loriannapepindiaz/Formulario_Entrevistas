@@ -1,7 +1,15 @@
-import { defineConfig } from 'vite'
-import preact from '@preact/preset-vite'
+import { defineConfig } from 'vite';
 
-// https://vite.dev/config/
+// Keep config Babel-free to avoid the preact-jsx Babel transform crash
+// (`babel-plugin-transform-hook-names` -> _parser.parse is not a function).
 export default defineConfig({
-  plugins: [preact()],
-})
+  esbuild: {
+    jsx: 'automatic',
+    jsxImportSource: 'react',
+  },
+  server: {
+    hmr: {
+      overlay: true,
+    },
+  },
+});
