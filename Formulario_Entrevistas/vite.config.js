@@ -1,11 +1,20 @@
 import { defineConfig } from 'vite';
 
-// Keep config Babel-free to avoid the preact-jsx Babel transform crash
-// (`babel-plugin-transform-hook-names` -> _parser.parse is not a function).
+// Keep Vite Babel-free, but compatible with React-style imports on Preact projects.
+// This avoids the preact Babel hook-name crash while still resolving react/react-dom imports.
 export default defineConfig({
   esbuild: {
     jsx: 'automatic',
-    jsxImportSource: 'react',
+    jsxImportSource: 'preact',
+  },
+  resolve: {
+    alias: {
+      react: 'preact/compat',
+      'react-dom/test-utils': 'preact/test-utils',
+      'react-dom': 'preact/compat',
+      'react-dom/client': 'preact/compat',
+      'react/jsx-runtime': 'preact/jsx-runtime',
+    },
   },
   server: {
     hmr: {
